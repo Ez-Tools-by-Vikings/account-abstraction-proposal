@@ -1,53 +1,25 @@
 ## Problem Statement
 
-Current crypto transfers requires a user to sign transactions each time. This is advantageous as it ensures that every transaction is secure and not done against user's will (at least in theory). But with numerous dapps coming up, the average number of transactions user needs to sign is increasing. This leads leads to a UX issue and discourages the user to use a lot of dapps.
-Let's take a simple example of Debit vs Credit cards: You need to manually make transactions using a debit card, but a credit card allows you to schedule payments and get subscriptions, which makes it the UX smooth and therefore it's one of the contributing factors to why people spend more on credit card.
+The biggest problem with wallets right now is their restrictive nature, you and even the DApps you use are forced to abide by the rules your EOA wallets set up and there's not much you can do about it, be it for transaction automation, advanced permission handling or any other custom function, we plan to change that.
 
 ## Solution
 
-A framework that allows dApps to request for permissions to withdraw/deposit funds as they need and allows users to grant permissions for multiple transfers using a single transaction.
-Why a framework? By being a framework, we:
-a. Give Developers complete freedom to build permissions as per their needs.
-b. Give Users the transparency and trust to ensure that what they approve is what can _possibly_ be removed
+We want to build a build your own wallet standarad, where we provide users with a base wallet that they can use as they'd use any EOA or even regular multisigs. What'd make this special though would be its ability to connect with 'modules', modules would be a wallet extension standard specific to our solution that'd allow developers to extend user's wallets as required. This could mean GameFi and DeFi specific modules or even DApp specific modules, you add it once and it transforms your wallet.
 
-## EIP 4337 Flow
+### Modules
 
-Below is a very high level of EIP 4337 flow with an additional Scheduler and a modified Validation block
+Account modules would be able to add further functionality to the wallets. These would be contract functions called using `delegatecall`. This functionality would work in a similar manner to adding facets in `diamond proxy`. The real difference would be the core permission standard that would ensure user assigned restrictions to the function call.
 
-```mermaid
-stateDiagram-v2
-direction LR
-state "User Operation" as uo
-state "Scheduler" as sch
-state "Bundler" as bundle
-state "Entry Point" as ep
-state "Validation" as val
-state "Extensions" as per
-state "Execution" as ex
+### Permissions
 
-sch --> bundle
-uo  --> bundle
-bundle --> ep
-val--> ep
-ep-->val
-val-->per
-per-->val
-val-->ex
-```
+User would be able to customise and modify access of these plugin modules using permission sets in their wallets. Their would be a base set of permissions and then extended permission that'd ship along with the modules.
 
-**User Operation:** Pseudo Transaction object, refer EIP 4337
+### Base Modules
 
-**Bundler:** Packaging User Operations similar to block builder, refer EIP 4337
+We'd also be building a base set of modules that users can plug in their wallets right out of the box. These would include gas payments using stables, transaction automations, token streaming and more.
 
-**Entry Point:** A singleton contract that executes UserOperations, refer EIP 4337
+## Future
 
-**Scheduler:** It is a decentralized network of nodes that executes transactions on behalf of users/dApps. This block is crucial for enabling services such as subscriptions, recurring payments, etc.
+### Decentralised Architecture for module support
 
-**Validation (Modified):** The EIP 4337 Validation verifies the transaction. Once the transaction is verified, the permissions are checked for the transaction.
-
-**Extension:** The core part of permissions granted by the user to another dApp/contract. Discussed in detail in the next section
-
-
-## Extension
-
-Extension functionality allows the smart contract wallet plug and play extensibility which can be utilised to extend the core functionality of the wallet. This would be dependent on `delegatecall` in the way diamond proxy pattern currently works and allow user to add new `facets` to the wallet effectively extending its functionality. Users can utilise the above defined permission pattern to allow restricted functionality to these facets for security purposes.
+We'd like to build a decentralised architecture similar to chainlink that'd execute module specific actions for the user, this could be gasless transactions, scheduling, auto borrowing and much more. The possibilities are truly endless there.
