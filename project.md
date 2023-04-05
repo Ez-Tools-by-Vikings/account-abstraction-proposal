@@ -10,6 +10,8 @@ We want to build a build your own wallet standarad, where we provide users with 
 
 Account modules would be able to add further functionality to the wallets. These would be contract functions called using `delegatecall`. This functionality would work in a similar manner to adding facets in `diamond proxy`. The real difference would be the core permission standard that would ensure user assigned restrictions to the function call.
 
+![diagram](wallet-module.png)
+
 ### Permissions
 
 User would be able to customise and modify access of these plugin modules using permission sets in their wallets. Their would be a base set of permissions and then extended permission that'd ship along with the modules.
